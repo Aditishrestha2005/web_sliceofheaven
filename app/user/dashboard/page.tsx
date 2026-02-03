@@ -29,7 +29,7 @@ export default function DashboardPage() {
         </nav>
 
         {/* Profile avatar → /profile */}
-        <Link href="/profile" className="flex items-center gap-3">
+        <Link href="../user/profile" className="flex items-center gap-3">
           <Image
             src="/profile.png"
             alt="Profile"
