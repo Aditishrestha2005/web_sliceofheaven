@@ -6,7 +6,6 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
       {/* Navbar */}
       <header className="flex items-center justify-between px-10 py-4 border-b border-orange-200 bg-white/70 backdrop-blur">
-        
         {/* Logo / Brand */}
         <h1 className="text-2xl font-extrabold text-orange-600 tracking-wide">
           Slice of Heaven
@@ -14,7 +13,7 @@ export default function DashboardPage() {
 
         {/* Nav links */}
         <nav className="flex gap-14 text-sm font-semibold text-orange-700">
-          <Link href="/user/dashboard" className="hover:underline">
+          <Link href="/dashboard" className="hover:underline">
             Home
           </Link>
           <a href="#about" className="hover:underline">
@@ -28,8 +27,8 @@ export default function DashboardPage() {
           </a>
         </nav>
 
-        {/* Profile avatar → /profile */}
-        <Link href="/profile" className="flex items-center gap-3">
+        {/* ✅ Profile avatar → /user/profile */}
+        <Link href="/user/profile" className="flex items-center gap-3">
           <Image
             src="/profile.png"
             alt="Profile"

@@ -1,45 +1,111 @@
+// import { NextRequest, NextResponse } from "next/server";
+// import { getAuthToken, getUserData } from "./lib/cookies";
+
+// const publicPaths = ["/login", "/signup", "/register", "/forget-password"];
+// const protectedPaths = ["/admin", "/user", "/dashboard"];
+
+// export async function proxy(req: NextRequest) {
+//   const { pathname } = req.nextUrl;
+
+//   let token: string | null = null;
+//   let user: any = null;
+
+//   try {
+//     token = (await getAuthToken()) || null;
+//     user = token ? await getUserData() : null;
+//   } catch {
+//     token = null;
+//     user = null;
+//   }
+
+//   const isPublicPath = publicPaths.some((p) => pathname.startsWith(p));
+//   const isProtectedPath = protectedPaths.some((p) => pathname.startsWith(p));
+
+//   // 1) If NOT logged in and trying to access protected areas
+//   if ((!token || !user) && isProtectedPath) {
+//     return NextResponse.redirect(new URL("/login", req.url));
+//   }
+
+//   // 2) If logged in and trying to access public auth pages
+//   // Redirect Admin to /admin/users and Users to /dashboard
+//   if (token && user && isPublicPath) {
+//     const target = user.role === "admin" ? "/admin/users" : "/dashboard";
+//     return NextResponse.redirect(new URL(target, req.url));
+//   }
+
+//   // 3) Role-Based Access Control
+//   if (token && user) {
+//     // Protect Admin routes
+//     if (pathname.startsWith("/admin") && user.role !== "admin") {
+//       return NextResponse.redirect(new URL("/dashboard", req.url));
+//     }
+
+//     // Protect User routes (Admins can also access /user)
+//     if (
+//       pathname.startsWith("/user") &&
+//       user.role !== "user" &&
+//       user.role !== "admin"
+//     ) {
+//       return NextResponse.redirect(new URL("/dashboard", req.url));
+//     }
+//   }
+
+//   return NextResponse.next();
+// }
+
+// // ✅ default export required for Next proxy system
+// export default proxy;
+
+// export const config = {
+//   matcher: [
+//     "/dashboard/:path*",
+//     "/admin/:path*",
+//     "/user/:path*",
+//     "/update-profile/:path*",
+//     "/login",
+//     "/signup",
+//     "/register",
+//     "/forget-password",
+//   ],
+// };
+
+
 import { NextRequest, NextResponse } from "next/server";
+import { getAuthToken, getUserData } from "./lib/cookies";
 
-const publicRoutes = ["/login", "/register", "/forget-password", "/reset-password"];
-const adminRoutes = ["/admin"];
-const userRoutes = ["/user"];
+const protectedPaths = ["/admin", "/user", "/dashboard"];
 
-export function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+export async function proxy(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-  // ✅ Read cookies directly from request (middleware-safe)
-  const token = request.cookies.get("auth_token")?.value || null;
-  const userStr = request.cookies.get("user_data")?.value || null;
-  const user = userStr ? JSON.parse(userStr) : null;
+  let token: string | null = null;
+  let user: any = null;
 
-  const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route));
-  const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
-  const isUserRoute = userRoutes.some((route) => pathname.startsWith(route));
-
-  // ✅ Not logged in -> block protected routes
-  if (!token && !isPublicRoute) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  try {
+    token = (await getAuthToken()) || null;
+    user = token ? await getUserData() : null;
+  } catch {
+    token = null;
+    user = null;
   }
 
-  // ✅ Logged in -> role checks
-  if (token && user) {
-    if (isAdminRoute && user.role !== "admin") {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
+  const isProtected = protectedPaths.some((p) => pathname.startsWith(p));
 
-    if (isUserRoute && user.role !== "user" && user.role !== "admin") {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
+  // ✅ Only protect protected routes
+  if (isProtected && (!token || !user)) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // ✅ If already logged in, block login/register pages
-  if (isPublicRoute && token) {
-    return NextResponse.redirect(new URL("/user/dashboard", request.url));
+  // ✅ Role-based admin protection
+  if (pathname.startsWith("/admin") && user?.role !== "admin") {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   return NextResponse.next();
 }
 
+export default proxy;
+
 export const config = {
-  matcher: ["/admin/:path*", "/user/:path*", "/login", "/register"],
+  matcher: ["/dashboard/:path*", "/admin/:path*", "/user/:path*"],
 };

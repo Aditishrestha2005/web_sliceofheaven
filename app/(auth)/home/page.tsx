@@ -14,7 +14,7 @@ export default function LandingPage() {
 
           <nav className="hidden md:flex gap-10 text-sm font-semibold text-orange-700">
             <a href="#home" className="hover:underline">Home</a>
-            <a href="#about" className="hover:underline">About us</a>
+            <a href="#about" className="hover:underline">About</a>
             <a href="#menu" className="hover:underline">Menu</a>
             <a href="#contact" className="hover:underline">Contact</a>
           </nav>
@@ -39,14 +39,13 @@ export default function LandingPage() {
       {/* ================= HERO ================= */}
       <section id="home" className="py-20">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
 
-            {/* LEFT TEXT */}
             <div>
               <h1 className="font-serif text-5xl md:text-6xl font-black leading-tight">
                 Your favorite{" "}
                 <span className="text-orange-600">Pizzas</span>, <br />
-                just a few click <br />
+                just a few clicks <br />
                 away!
               </h1>
 
@@ -64,27 +63,16 @@ export default function LandingPage() {
                   View Menu
                 </a>
               </div>
-
-              <div className="mt-10">
-                <p className="text-sm font-semibold text-orange-800">
-                  Connect with us
-                </p>
-                <div className="mt-3 flex gap-3">
-                  <div className="h-9 w-9 rounded-full bg-white shadow grid place-items-center">IG</div>
-                  <div className="h-9 w-9 rounded-full bg-white shadow grid place-items-center">F</div>
-                  <div className="h-9 w-9 rounded-full bg-white shadow grid place-items-center">X</div>
-                </div>
-              </div>
             </div>
 
-            {/* RIGHT IMAGE */}
-            <div className="flex justify-end">
-              <div className="relative h-[420px] w-[420px] rounded-3xl overflow-hidden">
+            <div className="flex justify-center">
+              <div className="relative h-[420px] w-[420px]">
                 <Image
-                  src="/pizza-hero.png"   // 🔁 replace with your image
+                  src="/pizza.png"
                   alt="Pizza"
                   fill
                   className="object-contain"
+                  priority
                 />
               </div>
             </div>
@@ -96,14 +84,14 @@ export default function LandingPage() {
       {/* ================= ABOUT ================= */}
       <section id="about" className="py-20">
         <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-12 gap-12">
-          
+
           <div className="md:col-span-5">
             <Image
-              src="/about-1.jpg"
+              src="/pizza.png"
               alt="Pizza slice"
               width={600}
               height={600}
-              className="rounded-3xl object-cover"
+              className="rounded-3xl object-contain"
             />
           </div>
 
@@ -114,8 +102,7 @@ export default function LandingPage() {
 
             <p className="mt-4 text-sm text-orange-900/70 leading-6">
               Slice of Heaven is an online pizza ordering platform created to
-              deliver happiness, one slice at a time. We use premium ingredients,
-              rich flavors, and a passion for quality.
+              deliver happiness, one slice at a time.
             </p>
 
             <div className="mt-8 grid grid-cols-2 gap-6">
@@ -138,47 +125,23 @@ export default function LandingPage() {
 
           <div className="mt-12 grid md:grid-cols-2 gap-12">
 
-            {/* FORM */}
             <div>
-              <h3 className="text-lg font-extrabold text-orange-700">
-                Get in Touch
-              </h3>
-
-              <div className="mt-6 space-y-4">
-                <input className="w-full border-b bg-transparent py-2 outline-none" placeholder="Name" />
-                <input className="w-full border-b bg-transparent py-2 outline-none" placeholder="Email" />
-                <textarea className="w-full border-b bg-transparent py-2 outline-none" placeholder="Message" />
-                <button className="bg-[#E39A3B] px-6 py-2 rounded-lg font-bold">
-                  Send Message
-                </button>
-              </div>
+              <input className="w-full border-b bg-transparent py-2 outline-none mb-4" placeholder="Name" />
+              <input className="w-full border-b bg-transparent py-2 outline-none mb-4" placeholder="Email" />
+              <textarea className="w-full border-b bg-transparent py-2 outline-none mb-4" placeholder="Message" />
+              <button className="bg-[#E39A3B] px-6 py-2 rounded-lg font-bold">
+                Send Message
+              </button>
             </div>
 
-            {/* INFO */}
             <div>
               <Image
-                src="/contact-chef.jpg"
-                alt="Chef"
+                src="/pizza.png"
+                alt="Pizza"
                 width={600}
                 height={400}
-                className="rounded-2xl"
+                className="rounded-2xl object-contain"
               />
-
-              <div className="mt-6">
-                <h4 className="font-extrabold text-orange-700">ADDRESS</h4>
-                <p className="text-sm mt-2 text-orange-900/70">
-                  Pulitsadak, Kathmandu <br />
-                  +977 9876543210 <br />
-                  sliceofheaven@gmail.com
-                </p>
-
-                <h4 className="mt-6 font-extrabold text-orange-700">
-                  WORKING HOURS
-                </h4>
-                <p className="text-sm mt-2 text-orange-900/70">
-                  7:30am – 9:30pm (Weekdays)
-                </p>
-              </div>
             </div>
 
           </div>
