@@ -1,103 +1,89 @@
 // import { NextRequest, NextResponse } from "next/server";
 // import { getAuthToken, getUserData } from "./lib/cookies";
 
-// const publicPaths = ["/login", "/signup", "/register", "/forget-password"];
-// const protectedPaths = ["/admin", "/user", "/dashboard"];
-
 // export async function proxy(req: NextRequest) {
 //   const { pathname } = req.nextUrl;
 
-//   let token: string | null = null;
-//   let user: any = null;
+//   const token = await getAuthToken();
+//   const user = token ? await getUserData() : null;
 
-//   try {
-//     token = (await getAuthToken()) || null;
-//     user = token ? await getUserData() : null;
-//   } catch {
-//     token = null;
-//     user = null;
-//   }
-
-//   const isPublicPath = publicPaths.some((p) => pathname.startsWith(p));
-//   const isProtectedPath = protectedPaths.some((p) => pathname.startsWith(p));
-
-//   // 1) If NOT logged in and trying to access protected areas
-//   if ((!token || !user) && isProtectedPath) {
+//   // 🔒 If accessing protected routes without login
+//   if (
+//     (pathname.startsWith("/admin") ||
+//       pathname.startsWith("/dashboard") ||
+//       pathname.startsWith("/user")) &&
+//     (!token || !user)
+//   ) {
 //     return NextResponse.redirect(new URL("/login", req.url));
 //   }
 
-//   // 2) If logged in and trying to access public auth pages
-//   // Redirect Admin to /admin/users and Users to /dashboard
-//   if (token && user && isPublicPath) {
-//     const target = user.role === "admin" ? "/admin/users" : "/dashboard";
-//     return NextResponse.redirect(new URL(target, req.url));
+//   // 🚫 Prevent logged-in users from visiting login/register again
+//   if (
+//     (pathname === "/login" || pathname === "/register") &&
+//     token &&
+//     user
+//   ) {
+//     if (user.role === "admin") {
+//       return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+//     } else {
+//       return NextResponse.redirect(new URL("/dashboard", req.url));
+//     }
 //   }
 
-//   // 3) Role-Based Access Control
-//   if (token && user) {
-//     // Protect Admin routes
-//     if (pathname.startsWith("/admin") && user.role !== "admin") {
-//       return NextResponse.redirect(new URL("/dashboard", req.url));
-//     }
-
-//     // Protect User routes (Admins can also access /user)
-//     if (
-//       pathname.startsWith("/user") &&
-//       user.role !== "user" &&
-//       user.role !== "admin"
-//     ) {
-//       return NextResponse.redirect(new URL("/dashboard", req.url));
-//     }
+//   // 🔐 Admin protection
+//   if (pathname.startsWith("/admin") && user?.role !== "admin") {
+//     return NextResponse.redirect(new URL("/dashboard", req.url));
 //   }
 
 //   return NextResponse.next();
 // }
 
-// // ✅ default export required for Next proxy system
 // export default proxy;
 
 // export const config = {
 //   matcher: [
-//     "/dashboard/:path*",
 //     "/admin/:path*",
+//     "/dashboard/:path*",
 //     "/user/:path*",
-//     "/update-profile/:path*",
 //     "/login",
-//     "/signup",
 //     "/register",
-//     "/forget-password",
 //   ],
 // };
+
 
 
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthToken, getUserData } from "./lib/cookies";
 
-const protectedPaths = ["/admin", "/user", "/dashboard"];
-
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  let token: string | null = null;
-  let user: any = null;
+  const token = await getAuthToken();
+  const user = token ? await getUserData() : null;
 
-  try {
-    token = (await getAuthToken()) || null;
-    user = token ? await getUserData() : null;
-  } catch {
-    token = null;
-    user = null;
-  }
+  const role = (user?.role || "").toLowerCase();
 
-  const isProtected = protectedPaths.some((p) => pathname.startsWith(p));
-
-  // ✅ Only protect protected routes
-  if (isProtected && (!token || !user)) {
+  // 🔒 If accessing protected routes without login
+  if (
+    (pathname.startsWith("/admin") ||
+      pathname.startsWith("/dashboard") ||
+      pathname.startsWith("/user")) &&
+    (!token || !user)
+  ) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // ✅ Role-based admin protection
-  if (pathname.startsWith("/admin") && user?.role !== "admin") {
+  // 🚫 Prevent logged-in users from visiting login/register again
+  if ((pathname === "/login" || pathname === "/register") && token && user) {
+    if (role === "admin") {
+      return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+    } else {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+  }
+
+  // 🔐 Admin protection (case-insensitive)
+  if (pathname.startsWith("/admin") && role !== "admin") {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
@@ -107,5 +93,13 @@ export async function proxy(req: NextRequest) {
 export default proxy;
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*", "/user/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/dashboard/:path*",
+    "/user/:path*",
+    "/login",
+    "/register",
+  ],
 };
+
+

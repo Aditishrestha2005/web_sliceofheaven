@@ -20,8 +20,7 @@ export const UserSchema = z
     message: "Passwords do not match",
   });
 
-// ✅ Use INPUT type for react-hook-form
+
 export type UserFormValues = z.input<typeof UserSchema>;
 
-// ✅ Keep OUTPUT type if you ever need it
 export type UserData = z.infer<typeof UserSchema>;
