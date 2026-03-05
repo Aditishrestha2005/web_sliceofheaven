@@ -457,7 +457,7 @@ export default function ProfilePage() {
                         value={form.password}
                         onChange={(v) => setForm((p) => ({ ...p, password: v }))}
                         type="password"
-                        helper="Password update not implemented in backend yet."
+          
                       />
                     </>
                   )}

@@ -59,15 +59,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </Link>
           </nav>
 
-          <div className="mt-auto p-6">
-            <div className="rounded-3xl border border-orange-100 bg-orange-50 p-4">
-              <p className="text-sm font-semibold text-orange-800">Tip</p>
-              <p className="mt-1 text-xs text-orange-900/60">
-                Use <span className="font-semibold">Users</span> page for full CRUD.
-                Dashboard is overview only.
-              </p>
-            </div>
-          </div>
+          
         </aside>
 
         {/* Main */}

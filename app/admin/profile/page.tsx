@@ -79,11 +79,7 @@ export default function AdminProfilePage() {
       if (rawUser) {
         const parsed: StoredUser = JSON.parse(rawUser);
 
-        // ✅ protect: only admin can stay here
-        if ((parsed.role || "").toLowerCase() !== "admin") {
-          router.push("/dashboard");
-          return;
-        }
+
 
         setUser(parsed);
         setForm({
@@ -241,34 +237,7 @@ export default function AdminProfilePage() {
   return (
     <div className="min-h-screen bg-orange-50">
       {/* Top bar - keep simple for admin */}
-      <header className="sticky top-0 z-50 flex items-center justify-between px-10 py-4 border-b border-orange-100 bg-white/90 backdrop-blur">
-        <Link
-          href="/admin/dashboard"
-          className="text-2xl font-extrabold text-orange-700 tracking-wide"
-        >
-          Slice of Heaven <span className="text-sm font-semibold text-orange-900/50">Admin</span>
-        </Link>
 
-        <div className="flex items-center gap-3">
-          <Link
-            href="/admin/dashboard"
-            className="rounded-full border border-orange-200 bg-white px-5 py-2 text-sm font-bold text-orange-700 hover:bg-orange-50"
-          >
-            Dashboard
-          </Link>
-
-          <Link href="/admin/profile" className="flex items-center">
-            <Image
-              src="/profile.png"
-              alt="Profile"
-              width={44}
-              height={44}
-              className="rounded-full object-cover cursor-pointer hover:ring-2 hover:ring-orange-500"
-              priority
-            />
-          </Link>
-        </div>
-      </header>
 
       <main className="px-6 py-8">
         <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-6">
